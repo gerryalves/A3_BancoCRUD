@@ -7,10 +7,18 @@ package bancocrud;
 public class Usuario {
     private String numero;
     private String senha;
+    private String nomeCompleto;
+    private String cpf;
+    private String email;
+    private String rg;
 
-    public Usuario(String numero, String senha) {
+    public Usuario(String numero, String senha, String nomeCompleto, String cpf, String email, String rg) {
         this.numero = numero;
         this.senha = senha;
+        this.nomeCompleto = nomeCompleto;
+        this.cpf = cpf;
+        this.email = email;
+        this.rg = rg;
     }
 
     public String getNumero() {
@@ -20,4 +28,21 @@ public class Usuario {
     public String getSenha() {
         return senha;
     }
+
+    public String getNomeCompleto() {
+        return nomeCompleto;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getRg() {
+        return rg;
+    }
 }
+
