@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
   
  public class BancoCRUD {
 
@@ -22,10 +26,23 @@ import javax.swing.JPasswordField;
                 String email = JOptionPane.showInputDialog("Digite seu e-mail:");
                 String rg = JOptionPane.showInputDialog("Digite seu RG (10 dígitos numéricos):");
                 if (rg.matches("\\d{10}")) {
-                    // Salvar todas as informações relevantes (número da conta, senha, nome, CPF, e-mail, RG)
-                    contas.put(numero, new ContaBancaria(numero, 0));
-                    usuarios.put(numero, new Usuario(numero, senha, nomeCompleto, cpf, email, rg));
-                    JOptionPane.showMessageDialog(null, "Conta criada com sucesso!");
+                    String dataNascimentoStr = JOptionPane.showInputDialog("Digite sua data de nascimento (formato: dd/mm/aaaa):");
+                    try {
+                        LocalDate dataNascimento = LocalDate.parse(dataNascimentoStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                        LocalDate hoje = LocalDate.now();
+                        Period periodo = Period.between(dataNascimento, hoje);
+                        int idade = periodo.getYears();
+
+                        if (idade >= 18) {
+                            contas.put(numero, new ContaBancaria(numero, 0));
+                            usuarios.put(numero, new Usuario(numero, senha, nomeCompleto, cpf, email, rg, dataNascimento));
+                            JOptionPane.showMessageDialog(null, "Conta criada com sucesso!");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Você deve ter 18 anos ou mais para criar uma conta.");
+                        }
+                    } catch (DateTimeParseException e) {
+                        JOptionPane.showMessageDialog(null, "Data de nascimento inválida. Use o formato dd/mm/aaaa.");
+                    }
                 } else {
                     JOptionPane.showMessageDialog(null, "RG inválido. Deve conter exatamente 10 dígitos numéricos.");
                 }
@@ -227,7 +244,7 @@ import javax.swing.JPasswordField;
         int opcao;
         do {
             opcao = Integer.parseInt(JOptionPane.showInputDialog(
-                    "        Matrix Bank \n" +
+                    "              Matrix Bank \n" +
                     "1. Criar conta\n" +
                     "2. Login\n" +
                     "3. Sair \n" +

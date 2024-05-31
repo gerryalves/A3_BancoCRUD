@@ -4,6 +4,8 @@ package bancocrud;
  *
  * @author Gerry
  */
+import java.time.LocalDate;
+
 public class Usuario {
     private String numero;
     private String senha;
@@ -11,14 +13,16 @@ public class Usuario {
     private String cpf;
     private String email;
     private String rg;
+    private LocalDate dataNascimento;
 
-    public Usuario(String numero, String senha, String nomeCompleto, String cpf, String email, String rg) {
+    public Usuario(String numero, String senha, String nomeCompleto, String cpf, String email, String rg, LocalDate dataNascimento) {
         this.numero = numero;
         this.senha = senha;
         this.nomeCompleto = nomeCompleto;
         this.cpf = cpf;
         this.email = email;
         this.rg = rg;
+        this.dataNascimento = dataNascimento;
     }
 
     public String getNumero() {
@@ -44,5 +48,8 @@ public class Usuario {
     public String getRg() {
         return rg;
     }
-}
 
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
+    }
+}
