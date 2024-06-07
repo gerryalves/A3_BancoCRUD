@@ -34,8 +34,9 @@ import java.time.format.DateTimeParseException;
                         int idade = periodo.getYears();
 
                         if (idade >= 18) {
+                            String sexo = JOptionPane.showInputDialog("Digite o sexo (M para Masculino, F para Feminino):");
                             contas.put(numero, new ContaBancaria(numero, 0));
-                            usuarios.put(numero, new Usuario(numero, senha, nomeCompleto, cpf, email, rg, dataNascimento));
+                            usuarios.put(numero, new Usuario(numero, senha, nomeCompleto, cpf, email, rg, dataNascimento, sexo));
                             JOptionPane.showMessageDialog(null, "Conta criada com sucesso!");
                         } else {
                             JOptionPane.showMessageDialog(null, "Você deve ter 18 anos ou mais para criar uma conta.");
@@ -58,6 +59,7 @@ import java.time.format.DateTimeParseException;
 }
 
 
+
     public void login() {
         String numero = JOptionPane.showInputDialog("Digite o número da conta:");
         JPasswordField senhaField = new JPasswordField();
@@ -75,47 +77,57 @@ import java.time.format.DateTimeParseException;
     }
     }
     public void menuLogado() {
-        int opcao;
-        do {
-            opcao = Integer.parseInt(JOptionPane.showInputDialog(
-                    "--- Minha conta ---\n" +
-                    "1. Visualizar saldo\n" +
-                    "2. Depositar\n" +
-                    "3. Sacar\n" +
-                    "4. Transferir para outra conta\n" +
-                    "5. Extrato\n" +        
-                    "6. Deletar conta\n" +        
-                    "7. Sair da conta\n" +
-                    "Escolha uma opção:"));
+    int opcao;
+    do {
+        opcao = Integer.parseInt(JOptionPane.showInputDialog(
+                "--- Conta poupança ---\n" +
+                "1. Visualizar saldo\n" +
+                "2. Depositar\n" +
+                "3. Sacar\n" +
+                "4. Transferir para outra conta\n" +
+                "5. Extrato\n" +
+                "6. Deletar conta\n" +
+                "7. Alterar dados cadastrados\n" + // Opção existente para alterar dados
+                "8. Visualizar dados cadastrados\n" + // Nova opção adicionada
+                "9. Sair da conta\n" +
+                "Escolha uma opção:"));
 
-            switch (opcao) {
-                case 1:
-                    visualizarSaldo();
-                    break;
-                case 2:
-                    depositar();
-                    break;
-                case 3:
-                    sacar();
-                    break;
-                case 4:
-                    transferir();
-                    break;
-                case 5:
-                    extrato();
-                    break;    
-                case 6:
-                    deletarConta();
-                    break;
-                case 7:
-                    usuarioLogado = null; // Desconecta o usuário
-                    break;
-                default:
-                    JOptionPane.showMessageDialog(null, "Opção inválida!");
-                    break;
-            }
-        } while (opcao != 7);
-    }
+        switch (opcao) {
+            case 1:
+                visualizarSaldo();
+                break;
+            case 2:
+                depositar();
+                break;
+            case 3:
+                sacar();
+                break;
+            case 4:
+                transferir();
+                break;
+            case 5:
+                extrato();
+                break;
+            case 6:
+                deletarConta();
+                break;
+            case 7:
+                usuarioLogado.alterarDados(); // Chama o método para alterar dados
+                break;
+            case 8:
+                JOptionPane.showMessageDialog(null, usuarioLogado.toString()); // Exibe os dados cadastrados
+                break;
+            case 9:
+                usuarioLogado = null; // Desconecta o usuário
+                break;
+            default:
+                JOptionPane.showMessageDialog(null, "Opção inválida!");
+                break;
+        }
+    } while (opcao != 9);
+}
+
+
     
     public void visualizarSaldo() {
         if (usuarioLogado != null) {
