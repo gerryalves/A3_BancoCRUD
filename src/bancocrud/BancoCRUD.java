@@ -3,6 +3,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,14 +27,7 @@ import javax.swing.JPasswordField;
                     String email = JOptionPane.showInputDialog("Digite seu e-mail:");
                     String rg = JOptionPane.showInputDialog("Digite seu RG (10 dígitos numéricos):");
                     if (rg.matches("\\d{10}")) {
-                        //String dataNascimentoStr = JOptionPane.showInputDialog("Digite sua data de nascimento (formato: dd/mm/aaaa):");
-                        //try {
-                            //LocalDate dataNascimento = LocalDate.parse(dataNascimentoStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                            //LocalDate hoje = LocalDate.now();
-                            //Period periodo = Period.between(dataNascimento, hoje);
-                            //int idade = periodo.getYears();
-
-                            //if (idade >= 18) {
+                        
                                 String sexo = JOptionPane.showInputDialog("Digite o sexo (M para Masculino, F para Feminino):");
 
                                 // Salvar os dados no banco de dados
@@ -56,12 +50,7 @@ import javax.swing.JPasswordField;
                                     JOptionPane.showMessageDialog(null, "Erro ao conectar ao banco de dados: " + e.getMessage());
                                 }
 
-                            //} else {
-                                //JOptionPane.showMessageDialog(null, "Você deve ter 18 anos ou mais para criar uma conta.");
-                            //}
-                        //} catch (DateTimeParseException e) {
-                            //JOptionPane.showMessageDialog(null, "Data de nascimento inválida. Use o formato dd/mm/aaaa.");
-                        //}
+                            
                     } else {
                         JOptionPane.showMessageDialog(null, "RG inválido. Deve conter exatamente 10 dígitos numéricos.");
                     }
@@ -115,11 +104,8 @@ import javax.swing.JPasswordField;
                 "2. Depositar\n" +
                 "3. Sacar\n" +
                 "4. Transferir para outra conta\n" +
-                "5. Extrato\n" +
-                "6. Deletar conta\n" +
-                "7. Alterar dados cadastrados\n" +
-                "8. Visualizar dados cadastrados\n" +
-                "9. Sair da conta\n" +
+                "5. Deletar conta\n" +
+                "6. Sair da conta\n" +
                 "Escolha uma opção:"));
 
         switch (opcao) {
@@ -136,38 +122,22 @@ import javax.swing.JPasswordField;
                 transferir();
                 break;
             case 5:
-                extrato();
-                break;
-            case 6:
                 deletarConta();
                 break;
-            case 7:
-                usuarioLogado.alterarDados();
-                break;
-            case 8:
-                visualizarDadosCadastrados(); // Novo método para exibir os dados
-                break;
-            case 9:
+            
+            case 6:
                 usuarioLogado = null;
                 break;
             default:
                 JOptionPane.showMessageDialog(null, "Opção inválida!");
                 break;
         }
-    } while (opcao != 9);
+    } while (opcao != 6);
 }
 
-private void visualizarDadosCadastrados() {
-    JOptionPane.showMessageDialog(null, usuarioLogado.toString());
-}
-
-
-
-    
-    public void visualizarSaldo() {
-    if (usuarioLogado != null) {
-        //JOptionPane.showMessageDialog(null, "Faça login antes de visualizar o saldo.");
-    } else {
+  public void visualizarSaldo() {
+    if (usuarioLogado == null) {
+        
         String numero = JOptionPane.showInputDialog("Digite o número da conta:");
         try (Connection conexao = Conexao.conectar()) {
             String sql = "SELECT saldo FROM contas WHERE numero = ?";
@@ -189,9 +159,7 @@ private void visualizarDadosCadastrados() {
 }
 
 
-
-
-    public void depositar() {
+public void depositar() {
     if (usuarioLogado == null) {
         String numero = JOptionPane.showInputDialog("Digite o número da conta:");
         try (Connection conexao = Conexao.conectar()) {
@@ -222,7 +190,7 @@ private void visualizarDadosCadastrados() {
             JOptionPane.showMessageDialog(null, "Erro ao conectar ao banco de dados: " + e.getMessage());
         }
     
-        //JOptionPane.showMessageDialog(null, "Faça login antes de realizar um depósito.");
+        
     }
 }
 
@@ -261,76 +229,102 @@ private void visualizarDadosCadastrados() {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao conectar ao banco de dados: " + e.getMessage());
         }
-    } else {
-        JOptionPane.showMessageDialog(null, "Faça login antes de realizar um saque.");
+    
     }
 }
 
 
     public void transferir() {
-    if (usuarioLogado != null) {
+    if (usuarioLogado == null) {
         String numeroOrigem = JOptionPane.showInputDialog("Digite o número da sua conta:");
-        ContaBancaria contaOrigem = contas.get(numeroOrigem);
-        if (contaOrigem != null) {
-            JPasswordField senhaField = new JPasswordField();
-                int result = JOptionPane.showConfirmDialog(null, senhaField, "Digite a senha:", JOptionPane.OK_CANCEL_OPTION);
-                if (result == JOptionPane.OK_OPTION) {
-                    String senha = new String(senhaField.getPassword());
-        if (usuarioLogado.getSenha().equals(senha)) {    
-            String numeroDestino = JOptionPane.showInputDialog("Digite o número da conta de destino:");
-            ContaBancaria contaDestino = contas.get(numeroDestino);
-            if (contaDestino != null) {
-                double valor = Double.parseDouble(JOptionPane.showInputDialog("Digite o valor a ser transferido: R$"));
-                if (contaOrigem.sacar(valor)) {
-                    contaDestino.depositar(valor);
-                    JOptionPane.showMessageDialog(null, "Transferência realizada com sucesso!");
-                    JOptionPane.showMessageDialog(null, "Novo saldo da conta de origem: R$ " + contaOrigem.getSaldo());
-                    
-                } else {
-                    JOptionPane.showMessageDialog(null, "Saldo insuficiente para a transferência.");
+        try (Connection conexao = Conexao.conectar()) {
+            String sqlOrigem = "SELECT saldo, senha FROM contas WHERE numero = ?";
+            try (PreparedStatement stmtOrigem = conexao.prepareStatement(sqlOrigem)) {
+                stmtOrigem.setString(1, numeroOrigem);
+                try (ResultSet resultadoOrigem = stmtOrigem.executeQuery()) {
+                    if (resultadoOrigem.next()) {
+                        double saldoOrigem = resultadoOrigem.getDouble("saldo");
+                        String senhaArmazenada = resultadoOrigem.getString("senha");
+
+                        JPasswordField senhaField = new JPasswordField();
+                        int result = JOptionPane.showConfirmDialog(null, senhaField, "Digite a senha:", JOptionPane.OK_CANCEL_OPTION);
+                        if (result == JOptionPane.OK_OPTION) {
+                            String senhaDigitada = new String(senhaField.getPassword());
+                            if (senhaArmazenada.equals(senhaDigitada)) {
+                                String numeroDestino = JOptionPane.showInputDialog("Digite o número da conta de destino:");
+                                try (PreparedStatement stmtDestino = conexao.prepareStatement(sqlOrigem)) {
+                                    stmtDestino.setString(1, numeroDestino);
+                                    try (ResultSet resultadoDestino = stmtDestino.executeQuery()) {
+                                        if (resultadoDestino.next()) {
+                                            double saldoDestino = resultadoDestino.getDouble("saldo");
+                                            double valor = Double.parseDouble(JOptionPane.showInputDialog("Digite o valor a ser transferido: R$"));
+                                            if (valor <= saldoOrigem) {
+                                                double novoSaldoOrigem = saldoOrigem - valor;
+                                                double novoSaldoDestino = saldoDestino + valor;
+
+                                                // Atualiza os saldos no banco de dados
+                                                String sqlAtualizarSaldoOrigem = "UPDATE contas SET saldo = ? WHERE numero = ?";
+                                                String sqlAtualizarSaldoDestino = "UPDATE contas SET saldo = ? WHERE numero = ?";
+                                                try (PreparedStatement stmtAtualizarSaldoOrigem = conexao.prepareStatement(sqlAtualizarSaldoOrigem);
+                                                     PreparedStatement stmtAtualizarSaldoDestino = conexao.prepareStatement(sqlAtualizarSaldoDestino)) {
+                                                    stmtAtualizarSaldoOrigem.setDouble(1, novoSaldoOrigem);
+                                                    stmtAtualizarSaldoOrigem.setString(2, numeroOrigem);
+                                                    stmtAtualizarSaldoOrigem.executeUpdate();
+
+                                                    stmtAtualizarSaldoDestino.setDouble(1, novoSaldoDestino);
+                                                    stmtAtualizarSaldoDestino.setString(2, numeroDestino);
+                                                    stmtAtualizarSaldoDestino.executeUpdate();
+                                                }
+
+                                                JOptionPane.showMessageDialog(null, "Transferência realizada com sucesso!");
+                                                JOptionPane.showMessageDialog(null, "Novo saldo da conta de origem: R$ " + novoSaldoOrigem);
+                                            } else {
+                                                JOptionPane.showMessageDialog(null, "Saldo insuficiente para a transferência.");
+                                            }
+                                        } else {
+                                            JOptionPane.showMessageDialog(null, "Conta de destino não encontrada.");
+                                        }
+                                    }
+                                }
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Senha incorreta.");
+                            }
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Conta de origem não encontrada.");
+                    }
                 }
-            } else {
-                JOptionPane.showMessageDialog(null, "Conta de destino não encontrada.");
             }
-            } else {
-                    JOptionPane.showMessageDialog(null, "Senha incorreta.");
-                }
-        } else {
-            JOptionPane.showMessageDialog(null, "Conta de origem não encontrada.");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao conectar ao banco de dados: " + e.getMessage());
         }
-    } else {
-        JOptionPane.showMessageDialog(null, "Faça login antes de realizar uma transferência.");
-       }
+    
     }
 }
 
-    public void deletarConta() {
-        String numero = JOptionPane.showInputDialog("Digite o número da conta que deseja deletar:");
-        if (usuarioLogado != null) {
-            JOptionPane.showMessageDialog(null, "Conta deletada com sucesso!");
-        } else {
-            JOptionPane.showMessageDialog(null, "Faça login antes de deletar a conta.");
-        }
-    }
-    public void extrato() {
-        if (usuarioLogado != null) {
-            String numero = JOptionPane.showInputDialog("Digite o número da conta:");
-            ContaBancaria conta = contas.get(numero);
-            if (conta != null) {
-                List<String> transacoes = conta.getTransacoes();
-                StringBuilder extrato = new StringBuilder("Extrato da conta " + numero + ":\n");
-                for (String transacao : transacoes) {
-                    extrato.append(transacao).append("\n");
-                }
-                JOptionPane.showMessageDialog(null, extrato.toString());
-            } else {
-                JOptionPane.showMessageDialog(null, "Conta não encontrada.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Faça login antes de visualizar o extrato.");
-        }
-    }
 
+   public void deletarConta() {
+    if (usuarioLogado == null) {
+        String numero = JOptionPane.showInputDialog("Digite o número da conta que deseja deletar:");
+        try (Connection conexao = Conexao.conectar()) {
+            String sql = "DELETE FROM contas WHERE numero = ?";
+            try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+                stmt.setString(1, numero);
+                int linhasAfetadas = stmt.executeUpdate();
+                if (linhasAfetadas > 0) {
+                    JOptionPane.showMessageDialog(null, "Conta deletada com sucesso!");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Conta não encontrada.");
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao conectar ao banco de dados: " + e.getMessage());
+        }
+    
+    }
+}
+
+    
     public static void main(String[] args) throws SQLException {
         BancoCRUD banco = new BancoCRUD();
          
