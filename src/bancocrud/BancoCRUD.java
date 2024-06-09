@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
   
@@ -325,7 +326,8 @@ public void depositar() {
     public static void main(String[] args) throws SQLException {
         BancoCRUD banco = new BancoCRUD();
          
-        JOptionPane.showMessageDialog(null, "Bem-vindo ao Matrix Bank", "Matrix Bank", JOptionPane.INFORMATION_MESSAGE);
+        ImageIcon iconic = new ImageIcon("moeda matrix bank.png");
+        JOptionPane.showMessageDialog(null, "Seja Bem-vindo ao Matrix Bank", "Matrix Bank", JOptionPane.INFORMATION_MESSAGE, iconic);
         int opcao;
         do {
             opcao = Integer.parseInt(JOptionPane.showInputDialog(
