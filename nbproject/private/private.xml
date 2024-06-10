@@ -3,9 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Gerry/Documents/NetBeansProjects/A3_BancoCRUD-main/src/bancocrud/BancoCRUD.java</file>
-            <file>file:/C:/Users/Gerry/Documents/NetBeansProjects/A3_BancoCRUD-main/src/bancocrud/Conexao.java</file>
-            <file>file:/C:/Users/Gerry/Documents/NetBeansProjects/A3_BancoCRUD-main/src/bancocrud/Usuario.java</file>
+            <file>file:/C:/Users/Gerry/Documents/NetBeansProjects/BancoCrud_GUI/src/telas/MenuLogado.java</file>
+            <file>file:/C:/Users/Gerry/Documents/NetBeansProjects/BancoCrud_GUI/src/bancocrud_gui/BancoCrud_GUI.java</file>
+            <file>file:/C:/Users/Gerry/Documents/NetBeansProjects/BancoCrud_GUI/src/telas/TelaDeCadastro.java</file>
         </group>
     </open-files>
 </project-private>
