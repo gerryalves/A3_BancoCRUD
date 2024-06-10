@@ -7,3 +7,4 @@ Atualização de código com opção de escolha de sexo no ato de abertura de co
 Implementação ao banco de dados com sucesso! Remoção de metodos com bugs e erros, atualização do programa.
 Simplificaçao do programa com Metodos e funções principais do CRUD funcionando com o banco de dados.
 Adicionada Logo ao banco.
+Criação de nova Interface ao Projeto, atualização de código, implementação de funcionalidade aos novos botões e respectivas telas. Data 10/06/2024 Hora: 18:28.
