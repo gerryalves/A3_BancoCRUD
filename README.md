@@ -9,3 +9,4 @@ Implementação ao banco de dados com sucesso! Remoção de metodos com bugs e e
 Simplificaçao do programa com Metodos e funções principais do CRUD funcionando com o banco de dados.
 Adicionada Logo ao banco.
 Criação de nova Interface ao Projeto, atualização de código, implementação de funcionalidade aos novos botões e respectivas telas. Data 10/06/2024 Hora: 18:28.
+Correção de bug ao editar layout do Menu Logado. Data 14/06/2024 Hora: 01:00.
