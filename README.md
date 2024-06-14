@@ -10,3 +10,4 @@ Simplificaçao do programa com Metodos e funções principais do CRUD funcionand
 Adicionada Logo ao banco.
 Criação de nova Interface ao Projeto, atualização de código, implementação de funcionalidade aos novos botões e respectivas telas. Data 10/06/2024 Hora: 18:28.
 Correção de bug ao editar layout do Menu Logado. Data 14/06/2024 Hora: 01:00.
+Correção de bugs e disposições no layout. Data 14/06/2024 Hora: 11:00.
